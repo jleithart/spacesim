@@ -1,0 +1,13 @@
+# all unity specific project files
+*.csproj
+*.sln
+*.unityproj
+*.userprefs
+*.pidb
+*.meta
+.DS_Store
+/Library
+/ProjectSettings
+/Temp
+/Assets/Standard Assets
+/Assets/Standard Assets(Mobile)
