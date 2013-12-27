@@ -13,18 +13,15 @@ public class move : MonoBehaviour {
 	 */
 
 	//the fastest the ship can go
-	float SHIP_MAX_SPEED = 10f;
+	float SHIP_MAX_SPEED = 200.0f;
+	//the slowest the ship can go
+	public float AMBIENT_SPEED = 100.0f;
 	//the current speed of the ship
-	float SHIP_SPEED = 4f;
+	//float SHIP_SPEED = .1f;
 	//how fast does this ship accelerate?
-	float SHIP_ACCELERATION = 0.1f;
+	float SHIP_ACCELERATION = 10.0f;
 	//how fast can it rotate
-	float SHIP_AGILITY = 5f;
-
-	// should there be constant movement
-
-	float speed = SHIP_START_SPEED;
-	float turn_speed = SHIP_AGILITY;
+	float SHIP_AGILITY = 200.0f;
 
 	/*
 	 * 
@@ -39,63 +36,21 @@ public class move : MonoBehaviour {
 	 * 		Mouse L: 	(-) yaw left
 	 */ 
 
+	void FixedUpdate(){
+		Quaternion AddRot = Quaternion.identity;
+		float roll = 0f;
+		float pitch = 0f;
+		float yaw = 0f;
+
+		roll = Input.GetAxis ("Roll") * (Time.fixedDeltaTime * SHIP_AGILITY);
+		pitch = Input.GetAxis ("Pitch") * (Time.fixedDeltaTime * SHIP_AGILITY);
+		yaw = Input.GetAxis ("Yaw") * (Time.fixedDeltaTime * SHIP_AGILITY);
+
+		AddRot.eulerAngles = new Vector3 (roll, yaw, pitch);
+		rigidbody.rotation *= AddRot;
+
+		Vector3 AddPos = Vector3.forward;
+		//AddPos = rigidbody.rotation * AddPos;
+		rigidbody.velocity = AddPos * (Time.fixedDeltaTime * AMBIENT_SPEED);}
 	
-	// Update is called once per frame
-	void Update () {
-
-		float rotationX = 0;
-		float rotationY = 0;
-		float rotationZ = 0;
-
-
-
-		if(Input.GetKey(KeyCode.W)){
-			//increase velocity
-			SHIP_SPEED = SHIP_SPEED + (SHIP_ACCELERATION * Time.deltaTime);
-			if(SHIP_SPEED > SHIP_MAX_SPEED)
-				SHIP_SPEED = SHIP_MAX_SPEED;
-		}
-		else if (Input.GetKey (KeyCode.S)) {
-			//decrease acceleration
-			SHIP_SPEED = SHIP_SPEED - (SHIP_ACCELERATION * Time.deltaTime);
-			if(SHIP_SPEED < 0)
-				SHIP_SPEED = 0;
-		}
-
-		/*
-		 * ROLL
-		 */
-
-		if (Input.GetKey (KeyCode.A)) {
-			// around the z access
-			rotationZ = Input.GetAxis ("Mouse X") * SHIP_AGILITY;
-		}
-		else if (Input.GetKey (KeyCode.D)) {
-			rotationZ = -(Input.GetAxis ("Mouse X") * SHIP_AGILITY);
-		}
-
-		/*
-		 * PITCH
-		 */
-		if (Input.GetAxis ("Mouse Y") > 0) {
-			rotationY = Input.GetAxis ("Mouse Y") * SHIP_AGILITY;
-		} else if (Input.GetAxis ("Mouse Y") < 0) {
-			rotationY = -(Input.GetAxis ("Mouse Y") * SHIP_AGILITY);
-		}
-
-		/*
-		 * YAW
-		 */
-		if (Input.GetAxis ("Mouse X") > 0) {
-			rotationX = Input.GetAxis ("Mouse X") * SHIP_AGILITY;
-		} else if (Input.GetAxis ("Mouse X") < 0) {
-			rotationX = -(Input.GetAxis ("Mouse X") * SHIP_AGILITY);
-		}
-
-
-		// don't think this is right atm
-		// I need to update everything AFTER checking on rotation
-		transform.Translate (Vector3.forward * SHIP_SPEED);
-		transform.Rotate (rotationX, rotationY, rotationZ);
-	}
 }
